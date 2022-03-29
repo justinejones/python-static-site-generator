@@ -5,31 +5,30 @@ from pathlib import Path
 
 class Parser:
 
-    @List[str]
-    extensions = []
+    extensions: List[str] = []
 
     def valid_extension(self, extension):
         return extension in self.extensions
 
-    @Path
-    def parse(self, path, source, dest):
+
+    def parse(self, path: Path, source: Path, dest: Path):
         raise NotImplementedError
 
     def read(self, path):
-        with open(path) as file:
+        with open(path, "r") as file:
             return file.read()
 
     def write(self, path, dest, content, ext=".html"):
         full_path = dest / path.with_suffix(ext).name
-        with open(full_path) as file:
+        with open(full_path, "w") as file:
             file.write(content)
 
-    def copy(path, source, dest):
+    def copy(self, path, source, dest):
         shutil.copy2(path, dest/path.relative_to(source))
 
 
 class ResourceParser(Parser):
-    extenstions = [".jpg", ".png", ".gif", ".css", ".html"]
+    extensions = [".jpg", ".png", ".gif", ".css", ".html"]
 
     def parse(self, path, source, dest):
         self.copy(path, source, dest)
